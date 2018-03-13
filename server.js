@@ -18,7 +18,29 @@ app.set("view engine", "ejs");
 
 app.use(methodOverride("_method"));
 
+// New Additions
+// 
+var cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    passport = require('passport'),
+    LocalStrategy = require('pastport-local').Strategy;
 
+// middleware for auth
+ 
+    app.use(cookieParser());
+    app.use(session({
+      secret: 'supersecretkey' // We'll change this later
+      resave: false,
+      saveUninitialized: false
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+// passport config
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 // HOMEPAGE ROUTE
 
 app.get("/", function (req, res) {
